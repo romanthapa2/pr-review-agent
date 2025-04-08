@@ -1,29 +1,35 @@
 import { Injectable } from '@nestjs/common';
-import OpenAI from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 @Injectable()
 export class AiService {
-  private openai: OpenAI;
+  private genAI: GoogleGenerativeAI;
 
   constructor() {
-    this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY, 
-    });
+    const apiKey = process.env.GOOGLE_API_KEY;
+    if (!apiKey) {
+      throw new Error('GOOGLE_API_KEY environment variable is not set');
+    }
+    this.genAI = new GoogleGenerativeAI(apiKey);
   }
 
   async analyzeDiff(diff: string): Promise<string> {
-    const response = await this.openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        { role: 'system', content: 'You are a senior engineer reviewing a PR. Provide constructive feedback.' },
-        { role: 'user', content: `Review this PR diff:\n\n${diff}` },
-      ],
-    });
-
-    const content = response.choices[0].message.content;
-    if (content === null) {
-      throw new Error('Received null content from OpenAI response');
+    try {
+      const model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+      
+      const prompt = `You are a senior engineer reviewing a PR. Provide constructive feedback on this PR diff:\n\n${diff}`;
+      
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      const content = response.text();
+      
+      if (!content) {
+        throw new Error('Received empty content from Gemini response');
+      }
+      return content;
+    } catch (error) {
+      console.error('Error calling Gemini API:', error);
+      return 'Unable to analyze this PR due to an API error. Please check your Google API key and model configuration.';
     }
-    return content;
   }
 }
