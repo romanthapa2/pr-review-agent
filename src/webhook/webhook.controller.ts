@@ -11,7 +11,10 @@ export class WebhookController {
     const event = req.headers['x-github-event'];
     const payload = req.body;
 
-    if (event === 'pull_request' && ['opened', 'synchronize'].includes(payload.action)) {
+    if (
+      event === 'pull_request' &&
+      ['opened', 'synchronize'].includes(payload.action)
+    ) {
       await this.webhookService.enqueuePR(payload);
     }
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Octokit } from '@octokit/rest';
-import axios from "axios"
+import axios from 'axios';
 
 @Injectable()
 export class GithubService {
@@ -10,33 +10,37 @@ export class GithubService {
     this.octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
   }
 
-  async fetchPRDiff(owner: string, repo: string, number: number): Promise<string> {
+  async fetchPRDiff(
+    owner: string,
+    repo: string,
+    number: number,
+  ): Promise<string> {
     try {
       // Get the PR information
-      const { data } = await this.octokit.pulls.get({ 
-        owner, 
-        repo, 
+      const { data } = await this.octokit.pulls.get({
+        owner,
+        repo,
         pull_number: number,
-        mediaType: { format: 'diff' }
+        mediaType: { format: 'diff' },
       });
-      
+
       // If response already contains diff content
       if (typeof data === 'string') {
         return data;
       }
-      
+
       // If we just got the URL, fetch the actual diff content
       if (data.diff_url) {
         console.log(`Fetching diff from URL: ${data.diff_url}`);
         const diffResponse = await axios.get(data.diff_url, {
           headers: {
             Accept: 'application/vnd.github.v3.diff',
-            Authorization: `token ${process.env.GITHUB_TOKEN}`
-          }
+            Authorization: `token ${process.env.GITHUB_TOKEN}`,
+          },
         });
-        return diffResponse.data;
+        return diffResponse.data as string;
       }
-      
+
       throw new Error('Could not retrieve PR diff');
     } catch (error) {
       console.error('Error fetching PR diff:', error);
@@ -44,7 +48,12 @@ export class GithubService {
     }
   }
 
-  async commentOnPR(owner: string, repo: string, number: number, comment: string) {
+  async commentOnPR(
+    owner: string,
+    repo: string,
+    number: number,
+    comment: string,
+  ) {
     try {
       await this.octokit.issues.createComment({
         owner,

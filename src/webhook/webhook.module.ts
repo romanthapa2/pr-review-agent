@@ -6,6 +6,6 @@ import { QueueModule } from '../queue/queue.module';
 @Module({
   imports: [QueueModule],
   controllers: [WebhookController],
-  providers: [WebhookService]
+  providers: [WebhookService],
 })
 export class WebhookModule {}

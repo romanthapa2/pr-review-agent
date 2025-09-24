@@ -13,10 +13,10 @@ import { QueueModule } from './queue/queue.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    GithubModule, 
-    AiModule, 
-    WebhookModule, 
-    QueueModule
+    GithubModule,
+    AiModule,
+    WebhookModule,
+    QueueModule,
   ],
   controllers: [AppController],
   providers: [AppService],
