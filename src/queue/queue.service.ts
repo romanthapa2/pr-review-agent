@@ -27,38 +27,6 @@ export class QueueService {
     this.aiQueue = new Queue('pr-review-queue', {
       connection,
     });
-
-    // const worker = new Worker(
-    //   'pr-review-queue',
-    //   async (job) => {
-    //     this.logger.log(
-    //       `Processing job ${job.id}: PR #${job.data.number} in ${job.data.owner}/${job.data.repo}`,
-    //     );
-    //     try {
-    //       const { owner, repo, number } = job.data;
-    //       await this.processPR(owner, repo, number);
-    //       this.logger.log(`Successfully processed PR #${number}`);
-    //       return { success: true };
-    //     } catch (error) {
-    //       this.logger.error(`Error processing job ${job.id}:`, error);
-    //       throw error;
-    //     }
-    //   },
-    //   {
-    //     connection: {
-    //       host: redisHost,
-    //       port: redisPort,
-    //     },
-    //   },
-    // );
-
-    // worker.on('completed', (job) => {
-    //   this.logger.log(`Job ${job.id} completed successfully`);
-    // });
-
-    // worker.on('failed', (job, error) => {
-    //   this.logger.error(`Job ${job?.id} failed:`, error);
-    // });
   }
 
   async addLintSecurityJob(owner: string, repo: string, number: number) {
@@ -75,17 +43,4 @@ export class QueueService {
     await this.aiQueue.add('ai-pr-review-task', { owner, repo, number });
     this.logger.log(`PR #${number} added to queue successfully`);
   }
-
-  // async processPR(owner: string, repo: string, number: number) {
-  //   this.logger.log(`Fetching diff for PR #${number}`);
-  //   const diff = await this.githubService.fetchPRDiff(owner, repo, number);
-
-  //   this.logger.log(`Analyzing diff for PR #${number}`);
-  //   const aiFeedback = await this.aiService.analyzeDiff(diff);
-
-  //   this.logger.log(`Posting comment on PR #${number}`);
-  //   await this.githubService.commentOnPR(owner, repo, number, aiFeedback);
-
-  //   this.logger.log(`PR #${number} processed successfully`);
-  // }
 }
