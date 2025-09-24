@@ -1,13 +1,13 @@
 import { Controller, Post, Req, Res } from '@nestjs/common';
 import { WebhookService } from './webhook.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 
 @Controller('webhook')
 export class WebhookController {
   constructor(private readonly webhookService: WebhookService) {}
 
   @Post()
-  async handleWebhook(@Req() req, @Res() res: Response) {
+  async handleWebhook(@Req() req: Request, @Res() res: Response) {
     const event = req.headers['x-github-event'];
     const payload = req.body;
 
