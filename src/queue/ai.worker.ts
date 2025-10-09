@@ -29,7 +29,7 @@ export class AiWorker {
   }
 
   private async processPR(owner: string, repo: string, number: number) {
-    this.logger.log(`Fetching diff for PR #${number}`);
+    // this.logger.log(`Fetching diff for PR #${number}`);
     const diff = await this.githubService.fetchPRDiff(owner, repo, number);
 
     this.logger.log(`Analyzing diff with AI for PR #${number}`);
