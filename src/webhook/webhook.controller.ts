@@ -13,7 +13,7 @@ export class WebhookController {
 
     if (
       event === 'pull_request' &&
-      ['opened', 'synchronize'].includes(payload.action)
+      ['opened', 'synchronize', 'reopened'].includes(payload.action)
     ) {
       await this.webhookService.enqueuePR(payload);
     }
