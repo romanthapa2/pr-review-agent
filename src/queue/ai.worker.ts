@@ -24,7 +24,10 @@ export class AiWorker {
         this.logger.log(`Processing AI PR Review for PR #${number}`);
         return this.processPR(owner, repo, number);
       },
-      { connection: { host: redisHost, port: redisPort } },
+      {
+        connection: { host: redisHost, port: redisPort },
+        lockDuration: 120000,
+      },
     );
   }
 

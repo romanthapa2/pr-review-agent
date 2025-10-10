@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
-// import { AppService } from './app.service';
+import { AppService } from './app.service';
 import { GithubModule } from './github/github.module';
 import { AiModule } from './ai/ai.module';
 import { WebhookModule } from './webhook/webhook.module';
@@ -23,6 +23,6 @@ import { AiWorker } from './queue/ai.worker';
     QueueModule,
   ],
   controllers: [AppController],
-  providers: [WebhookService, QueueService, EslintWorker, AiWorker],
+  providers: [AppService, WebhookService, QueueService, EslintWorker, AiWorker],
 })
 export class AppModule {}

@@ -15,7 +15,9 @@ export class AiService {
 
   async analyzeDiff(diff: string): Promise<string> {
     try {
-      const model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
+      const model = this.genAI.getGenerativeModel({
+        model: 'gemini-2.0-flash-exp',
+      });
 
       const prompt = `You are an expert code reviewer with deep expertise in software engineering best practices. Your role is to provide detailed, actionable feedback on code changes.
 
@@ -33,9 +35,10 @@ Line [Y]: [corrected code]
 Code changes to review:
 ${diff}`;
 
-      const result = await model.generateContent(prompt);
-      const response = result.response;
-      const content = response.text();
+      const result = await model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      });
+      const content = result.response.text();
 
       if (!content) {
         throw new Error('Received empty content from Gemini response');
