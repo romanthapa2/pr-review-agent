@@ -1,6 +1,4 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { GithubService } from '../github/github.service';
-import { AiService } from '../ai/ai.service';
 import { Queue } from 'bullmq';
 import { ConfigService } from '@nestjs/config';
 
@@ -10,11 +8,7 @@ export class QueueService {
   private eslintQueue: Queue;
   private readonly logger = new Logger(QueueService.name);
 
-  constructor(
-    private readonly githubService: GithubService,
-    private readonly aiService: AiService,
-    private readonly configService: ConfigService,
-  ) {
+  constructor(private readonly configService: ConfigService) {
     const redisHost = this.configService.get<string>('REDIS_HOST');
     const redisPort = this.configService.get<number>('REDIS_PORT');
 
