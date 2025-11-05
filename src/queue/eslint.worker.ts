@@ -55,6 +55,7 @@ export class EslintWorker implements OnModuleInit {
 
     const workerOptions: WorkerOptions = {
       connection: { host: redisHost, port: redisPort },
+      lockDuration: 120000,
     };
 
     this.worker = new Worker<jobData>(
