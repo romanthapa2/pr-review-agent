@@ -13,7 +13,7 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       # OPENAI_API_KEY: your-openai-key
-      GOOGLE_API_KEY: ${GEMINI_API_KEY}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
     depends_on:
       - redis
     restart: unless-stopped
