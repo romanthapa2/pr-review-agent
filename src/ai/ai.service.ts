@@ -1,24 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenAI } from '@google/genai';
 
 @Injectable()
 export class AiService {
-  private genAI: GoogleGenerativeAI;
+  private genAI: GoogleGenAI;
 
   constructor() {
     const apiKey = process.env.GOOGLE_API_KEY;
     if (!apiKey) {
       throw new Error('GOOGLE_API_KEY environment variable is not set');
     }
-    this.genAI = new GoogleGenerativeAI(apiKey);
+    this.genAI = new GoogleGenAI({ apiKey });
   }
 
   async analyzeDiff(diff: string): Promise<string> {
     try {
-      const model = this.genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash',
-      });
-
       const prompt = `You are an expert code reviewer with deep expertise in software engineering best practices. Your role is to provide detailed, actionable feedback on code changes.
 
 Please analyze the following code changes and provide feedback in the following format for each file. List issues in order of importance (Syntax Error > Logical Error > Security  > Bug > Performance > Code Style):
@@ -35,10 +31,11 @@ Line [Y]: [corrected code]
 Code changes to review:
 ${diff}`;
 
-      const result = await model.generateContent({
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      const response = await this.genAI.models.generateContent({
+        model: "gemini-2.0-flash",
+        contents: prompt
       });
-      const content = result.response.text();
+      const content = response.text;
 
       if (!content) {
         throw new Error('Received empty content from Gemini response');
