@@ -1,6 +1,26 @@
-version: '3.8'
+
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-pr-reviewer
+    ports:
+      - "3000:3000"
+    environment:
+      # Adjust / extend these env vars to match your .env
+      NODE_ENV: production
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      # OPENAI_API_KEY: your-openai-key
+      GOOGLE_API_KEY: ${GEMINI_API_KEY}
+    depends_on:
+      - redis
+    restart: unless-stopped
+
   redis:
     image: redis:latest
+    container_name: ai-pr-reviewer-redis
     ports:
       - "6379:6379"
+    restart: unless-stopped
