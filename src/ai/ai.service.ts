@@ -16,7 +16,7 @@ export class AiService {
   async analyzeDiff(diff: string): Promise<string> {
     try {
       const model = this.genAI.getGenerativeModel({
-        model: 'gemini-2.0-flash',
+        model: 'gemini-1.5-flash',
       });
 
       const prompt = `You are an expert code reviewer with deep expertise in software engineering best practices. Your role is to provide detailed, actionable feedback on code changes.
